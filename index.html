@@ -638,7 +638,7 @@ const SET=Object.assign({bgm:true,vol:55,lang:'ko',fs:'1',joy:'any'},(()=>{try{r
 try{if(localStorage.getItem('pongdang_bgm')==='off')SET.bgm=false;}catch(_){}
 window.SET=SET;function saveSet(){try{localStorage.setItem('pongdang_set',JSON.stringify(SET));localStorage.setItem('pongdang_bgm',SET.bgm?'on':'off');}catch(_){}}
 function applySet(){const a=E('bgm');if(a){a.volume=SET.vol/100;if(!SET.bgm)a.pause();}const bb=E('bgmBtn');if(bb){bb.innerHTML=ii(SET.bgm?'on':'off');bb.classList.toggle('off',!SET.bgm);}}
-const LANGS=[['ko','한국어'],['en','English'],['ja','日本語'],['zh','中文'],['es','Español']],VER='v0.5.0 · 2026.10.19';
+const LANGS=[['ko','한국어'],['en','English'],['ja','日本語'],['zh','中文'],['es','Español']],VER='v0.4.1 · 2026.10.19';
 function chips(key,opts){return '<span class="chips">'+opts.map(o=>'<button class="chip'+(SET[key]===o[0]?' on':'')+'" data-c="'+key+'" data-v="'+o[0]+'">'+o[1]+'</button>').join('')+'</span>';}
 function row(icon,label,right){return '<div class="srow"><span>'+ii(icon)+' '+label+'</span>'+right+'</div>';}
 function openSet(){E('settBox').innerHTML='<h2>설정</h2><p class="sub2">'+esc(A.name)+' 님의 퐁당 하루</p>'+

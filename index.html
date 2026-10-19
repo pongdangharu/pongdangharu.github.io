@@ -434,7 +434,7 @@ function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;T+=dt;x.clear
  else if(MODE==='title'){const ki=(H>W*1.1)?BGI.keyV:BGI.keyH;if(ki.naturalWidth){const sc=Math.max(W/ki.naturalWidth,H/ki.naturalHeight),dw=ki.naturalWidth*sc,dh=ki.naturalHeight*sc;x.drawImage(ki,(W-dw)/2,(H-dh)/2,dw,dh);}else{x.fillStyle='#5fb6ea';x.fillRect(0,0,W,H);}}
  else{ // talk / pause / result : 현재 장면 배경 정지 화면
   if(PH){bg(cam);const k=PH.def.key;if(k==='shell')landmark(BGI.house,40,'우리 집');if(k==='bubble')landmark(BGI.school,W*.62,'물고기 학교');if(k==='home')landmark(BGI.house,PH.st.goalX-60,'우리 집');if(P)drawRig(x,P.a.id,P.x-cam,P.y,P.size*1.55,P.face,T,'normal',false,1,0);fg(cam);tint(DAY?DAY.i/4:0);}
-  if(MODE==='talk'&&TALK){const g=$('tcv').getContext('2d');g.clearRect(0,0,200,160);if(NBI[TALK.who]){drawNb(g,TALK.who,100,84,TALK.who==='ray'?110:140,T,true);}else drawRig(g,TALK.who,100,84,TALK.who==='fr'?180:(TALK.who==='sis'?110:150),1,T,'happy',T-TALK.t0<1.6,1,0);}}
+  if(MODE==='talk'&&TALK){const g=$('tcv').getContext('2d');g.clearRect(0,0,200,160);if(NBI[TALK.who]){const im=NBI[TALK.who];const ar=im.naturalWidth/im.naturalHeight||1;const h=Math.min(130,180/ar);drawNb(g,TALK.who,100,84,h,T,true);}else drawRig(g,TALK.who,100,84,TALK.who==='fr'?180:(TALK.who==='sis'?110:150),1,T,'happy',T-TALK.t0<1.6,1,0);}}
  for(const id in pickCv){const cv=pickCv[id],g=cv.getContext('2d');g.clearRect(0,0,144,96);drawRig(g,id,72,50,id==='fr'?128:(id==='sis'?80:100),1,T,save.pick===id?'happy':'normal',false,1,id.length);}
  requestAnimationFrame(loop);}
 buildPick();requestAnimationFrame(loop);

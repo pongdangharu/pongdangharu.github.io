@@ -58,6 +58,7 @@ canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block}
 #buyAsk .by{background:#ffe27a;color:#3a2a00}#buyAsk .bn{background:#fff;color:var(--ink)}#buyAsk button:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .shi{height:1.15em;width:auto;vertical-align:-0.2em}
 .nbres{display:flex;align-items:center;gap:10px;background:#fff7d6;border-radius:16px;padding:6px 10px;margin:6px 0}.nbres>img{width:54px;height:auto}.nbres .shi{width:auto;height:1.1em}
+#bgmBtn{position:fixed;right:max(12px,env(safe-area-inset-right));top:max(12px,env(safe-area-inset-top));z-index:60;width:46px;height:46px;border-radius:50%;border:3px solid var(--ink);background:#fff;font-size:22px;line-height:1;cursor:pointer;box-shadow:0 4px 0 var(--ink);display:flex;align-items:center;justify-content:center;padding:0}#bgmBtn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}#bgmBtn.off{opacity:.6}
 </style></head><body>
 <canvas id="c"></canvas>
 <div id="title"><div><h1>퐁당 하루</h1><div class="ser pill">하루 시리즈 · 첫 번째 이야기</div></div>
@@ -274,4 +275,13 @@ function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;T+=dt;x.clear
  for(const id in pickCv){const cv=pickCv[id],g=cv.getContext('2d');g.clearRect(0,0,144,96);drawRig(g,id,72,50,id==='fr'?128:(id==='sis'?80:100),1,T,save.pick===id?'happy':'normal',false,1,id.length);}
  requestAnimationFrame(loop);}
 buildPick();requestAnimationFrame(loop);
-</script><div id="buyAsk" class="hide" role="dialog" aria-modal="true"><div class="bx"><canvas width="168" height="138"></canvas><div class="bq"></div><div class="bc"></div><div class="bb"><button class="by">살래요</button><button class="bn">안 살래요</button></div></div></div></body></html>
+</script><div id="buyAsk" class="hide" role="dialog" aria-modal="true"><div class="bx"><canvas width="168" height="138"></canvas><div class="bq"></div><div class="bc"></div><div class="bb"><button class="by">살래요</button><button class="bn">안 살래요</button></div></div></div><audio id="bgm" src="bgm.mp3?v=1" loop preload="auto"></audio><button id="bgmBtn" type="button" aria-label="배경음악 켜기/끄기">🎵</button>
+<script>(function(){const a=document.getElementById('bgm'),b=document.getElementById('bgmBtn');a.volume=.55;let on=true;try{on=localStorage.getItem('pongdang_bgm')!=='off';}catch(e){}
+function ui(){b.textContent=on?'🎵':'🔇';b.classList.toggle('off',!on);}
+function play(){if(on){const p=a.play();if(p&&p.catch)p.catch(()=>{});}}
+ui();
+const first=()=>{play();['pointerdown','keydown','touchstart'].forEach(t=>removeEventListener(t,first,true));};
+['pointerdown','keydown','touchstart'].forEach(t=>addEventListener(t,first,true));
+b.addEventListener('click',e=>{e.stopPropagation();on=!on;try{localStorage.setItem('pongdang_bgm',on?'on':'off');}catch(_){}ui();if(on)play();else a.pause();});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)a.pause();else play();});
+})();</script></body></html>

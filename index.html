@@ -59,6 +59,26 @@ canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block}
 .shi{height:1.15em;width:auto;vertical-align:-0.2em}
 .nbres{display:flex;align-items:center;gap:10px;background:#fff7d6;border-radius:16px;padding:6px 10px;margin:6px 0}.nbres>img{width:54px;height:auto}.nbres .shi{width:auto;height:1.1em}
 #bgmBtn{position:fixed;right:max(12px,env(safe-area-inset-right));top:max(12px,env(safe-area-inset-top));z-index:60;width:46px;height:46px;border-radius:50%;border:3px solid var(--ink);background:#fff;font-size:22px;line-height:1;cursor:pointer;box-shadow:0 4px 0 var(--ink);display:flex;align-items:center;justify-content:center;padding:0}#bgmBtn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}#bgmBtn.off{opacity:.6}
+
+.ov{position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;background:rgba(10,40,80,.5);padding:16px}.ov.hide{display:none}
+.ovb{background:#fff;border:4px solid var(--ink);border-radius:30px;box-shadow:0 8px 0 var(--ink);width:min(420px,100%);max-height:92vh;overflow:auto;padding:22px 24px 24px;color:var(--ink);animation:bpop .25s cubic-bezier(.2,1.6,.4,1)}
+.ovb h2{margin:0 0 4px;font-size:30px;text-align:center}.ovb .sub2{text-align:center;color:#4a7194;margin:0 0 16px;font-size:16px}
+.tabs{display:flex;gap:8px;margin-bottom:14px}.tabs button{flex:1;font:inherit;font-size:19px;padding:9px;border-radius:999px;border:3px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer}.tabs button.on{background:#ffe27a}
+.ovb input{display:block;width:100%;box-sizing:border-box;font:inherit;font-size:18px;padding:11px 14px;margin:0 0 10px;border:3px solid #cfe3f5;border-radius:16px;background:#f5faff;color:var(--ink);outline:none}.ovb input:focus{border-color:#5fb6ea}
+.ovb .pbtn{display:block;width:100%;font:inherit;font-size:21px;padding:12px;border-radius:999px;border:3px solid var(--ink);background:#ffe27a;color:#3a2a00;cursor:pointer;box-shadow:0 4px 0 var(--ink);margin-top:6px}
+.ovb .pbtn.w{background:#fff;color:var(--ink)}.ovb .pbtn:disabled{opacity:.6}
+.ovb .pbtn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.ovb .err{color:#d24a5e;font-size:16px;margin:4px 0 8px;text-align:center}.ovb .lnk{display:block;margin:12px auto 0;background:none;border:0;font:inherit;color:#4a7194;text-decoration:underline;cursor:pointer;font-size:15px}
+.ovb .or{text-align:center;color:#9bb4ca;margin:12px 0 6px;font-size:14px}
+.ovb .gbtn{display:flex;align-items:center;justify-content:center;gap:10px}.ovb .gbtn svg{width:22px;height:22px}
+.prow{display:flex;justify-content:space-between;align-items:center;padding:10px 4px;border-bottom:2px dashed #e3eef8;font-size:18px}.prow b{font-weight:400;color:#4a7194}.prow span{color:var(--ink)}
+.pav{display:flex;align-items:center;gap:14px;margin:4px 0 12px}.pav canvas{width:96px;height:72px;background:#e8f6ff;border-radius:20px;border:3px solid var(--ink)}.pav .pn{font-size:28px}.pav .pe{color:#7b98b2;font-size:14px}
+.srow{display:flex;justify-content:space-between;align-items:center;padding:12px 4px;border-bottom:2px dashed #e3eef8;font-size:19px;gap:12px}
+.tg{width:58px;height:32px;border-radius:999px;border:3px solid var(--ink);background:#dfe7ee;position:relative;cursor:pointer;flex:none}.tg::after{content:"";position:absolute;top:2px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;border:2px solid var(--ink);transition:left .2s}.tg.on{background:#7fd6a8}.tg.on::after{left:27px}
+.srow input[type=range]{width:150px;accent-color:#5fb6ea;margin:0;padding:0;border:0;background:none}
+#topL{position:fixed;left:max(12px,env(safe-area-inset-left));top:max(12px,env(safe-area-inset-top));z-index:60;display:flex;gap:8px}#topL.hide{display:none}
+#topL button{height:46px;border-radius:999px;border:3px solid var(--ink);background:#fff;font:inherit;font-size:17px;padding:0 14px;cursor:pointer;box-shadow:0 4px 0 var(--ink);color:var(--ink);display:flex;align-items:center;gap:6px}
+#topL button:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 </style></head><body>
 <canvas id="c"></canvas>
 <div id="title"><div><h1>퐁당 하루</h1><div class="ser pill">하루 시리즈 · 첫 번째 이야기</div></div>
@@ -275,13 +295,109 @@ function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;T+=dt;x.clear
  for(const id in pickCv){const cv=pickCv[id],g=cv.getContext('2d');g.clearRect(0,0,144,96);drawRig(g,id,72,50,id==='fr'?128:(id==='sis'?80:100),1,T,save.pick===id?'happy':'normal',false,1,id.length);}
  requestAnimationFrame(loop);}
 buildPick();requestAnimationFrame(loop);
-</script><div id="buyAsk" class="hide" role="dialog" aria-modal="true"><div class="bx"><canvas width="168" height="138"></canvas><div class="bq"></div><div class="bc"></div><div class="bb"><button class="by">살래요</button><button class="bn">안 살래요</button></div></div></div><audio id="bgm" src="bgm.mp3?v=1" loop preload="auto"></audio><button id="bgmBtn" type="button" aria-label="배경음악 켜기/끄기">🎵</button>
-<script>(function(){const a=document.getElementById('bgm'),b=document.getElementById('bgmBtn');a.volume=.55;let on=true;try{on=localStorage.getItem('pongdang_bgm')!=='off';}catch(e){}
+</script><div id="buyAsk" class="hide" role="dialog" aria-modal="true"><div class="bx"><canvas width="168" height="138"></canvas><div class="bq"></div><div class="bc"></div><div class="bb"><button class="by">살래요</button><button class="bn">안 살래요</button></div></div></div><style id="sgsplash-css">
+#sgsplash{position:fixed;inset:0;z-index:2147483000;background:#050508;display:flex;align-items:center;justify-content:center;transition:opacity .7s ease;pointer-events:none}
+#sgsplash.out{opacity:0}
+#sgsplash::before{content:"";position:absolute;inset:-20%;background:radial-gradient(30% 25% at 30% 45%,rgba(79,141,255,.18),transparent 70%),radial-gradient(30% 25% at 70% 45%,rgba(255,92,184,.16),transparent 70%),radial-gradient(35% 25% at 50% 72%,rgba(47,211,154,.13),transparent 70%);animation:sgglow 1.6s ease both}
+#sgsplash .sl{position:relative;width:min(560px,78vw);height:auto;animation:sglogo 1.4s cubic-bezier(.2,.8,.2,1) both}
+@keyframes sglogo{from{opacity:0;transform:scale(.94);filter:blur(10px)}to{opacity:1;transform:none;filter:none}}
+@keyframes sgglow{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){#sgsplash .sl,#sgsplash::before{animation:none}}
+</style>
+<div id="sgsplash" aria-hidden="true"><svg class="sl" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="-40 -40 661 255"><path d="M34.375 101.171875C54.1015625 101.171875 65.380859375 92.48046875 65.380859375 77.24609375C65.380859375 65.625 58.30078125 59.1796875 41.6015625 56.103515625L35.7421875 55.029296875C28.173828125 53.662109375 24.90234375 51.806640625 24.90234375 48.33984375C24.90234375 44.677734375 28.90625 42.08984375 34.619140625 42.08984375C40.673828125 42.08984375 44.7265625 45.21484375 45.21484375 50.29296875H63.8671875C63.37890625 35.05859375 52.392578125 26.07421875 34.228515625 26.07421875C16.552734375 26.07421875 4.4921875 35.498046875 4.4921875 49.31640625C4.4921875 60.107421875 12.109375 67.578125 26.171875 70.263671875L33.3984375 71.630859375C41.6015625 73.193359375 45.3125 75.244140625 45.3125 78.759765625C45.3125 82.568359375 41.015625 85.15625 34.619140625 85.15625C27.24609375 85.15625 22.607421875 81.689453125 22.314453125 75.78125H3.125C3.125 92.138671875 14.208984375 101.171875 34.375 101.171875Z" fill="#f3ecdf"/><path d="M80.505859375 100.0H102.72265625L111.169921875 71.77734375C113.806640625 62.98828125 116.248046875 54.4921875 118.640625 45.654296875C120.984375 54.4921875 123.376953125 62.98828125 125.916015625 71.77734375L134.0703125 100.0H156.921875L132.263671875 27.24609375H104.919921875Z" fill="#e3c27a"/><path d="M206.6171875 101.171875C226.783203125 101.171875 240.2109375 88.818359375 240.2109375 69.873046875V59.375H207.203125V73.876953125H220.38671875C220.19140625 79.736328125 215.6015625 83.59375 207.349609375 83.59375C196.8515625 83.59375 191.3828125 76.611328125 191.3828125 63.671875C191.3828125 50.732421875 196.75390625 43.65234375 207.056640625 43.65234375C214.0390625 43.65234375 217.9453125 46.923828125 218.970703125 52.34375H239.673828125C238.35546875 36.5234375 223.951171875 26.07421875 206.2265625 26.07421875C186.353515625 26.07421875 170.875 39.35546875 170.875 63.671875C170.875 86.669921875 184.9375 101.171875 206.6171875 101.171875Z" fill="#f3ecdf"/><path d="M254.9453125 100.0H277.162109375L285.609375 71.77734375C288.24609375 62.98828125 290.6875 54.4921875 293.080078125 45.654296875C295.423828125 54.4921875 297.81640625 62.98828125 300.35546875 71.77734375L308.509765625 100.0H331.361328125L306.703125 27.24609375H279.359375Z" fill="#e3c27a"/><path d="M345.314453125 44.43359375H366.017578125V100.0H386.330078125V44.43359375H407.033203125V27.24609375H345.314453125Z" fill="#f3ecdf"/><path d="M458.291015625 101.171875C478.06640625 101.171875 493.642578125 87.939453125 493.642578125 63.671875C493.642578125 39.35546875 478.06640625 26.07421875 458.291015625 26.07421875C438.41796875 26.07421875 422.939453125 39.35546875 422.939453125 63.671875C422.939453125 87.79296875 438.41796875 101.171875 458.291015625 101.171875ZM458.291015625 83.59375C448.76953125 83.59375 443.447265625 76.220703125 443.447265625 63.671875C443.447265625 51.07421875 448.76953125 43.65234375 458.291015625 43.65234375C467.861328125 43.65234375 473.134765625 51.07421875 473.134765625 63.671875C473.134765625 76.220703125 467.861328125 83.59375 458.291015625 83.59375Z" fill="#f3ecdf"/><path d="M511.501953125 100.0H531.814453125V73.4375C531.814453125 70.5078125 531.814453125 64.794921875 531.5703125 58.251953125C534.98828125 64.55078125 538.2109375 70.166015625 540.26171875 73.4375L556.814453125 100.0H577.517578125V27.24609375H557.205078125V53.90625C557.205078125 57.373046875 557.25390625 63.28125 557.44921875 69.189453125C554.6171875 63.96484375 551.638671875 58.544921875 549.9296875 55.810546875L532.205078125 27.24609375H511.501953125Z" fill="#f3ecdf"/><g transform="translate(186.0,160)"><path d="M8.6455078125 0.279296875C13.2412109375 0.279296875 15.9453125 -1.9423828125 15.9453125 -5.3828125C15.9453125 -8.556640625 13.482421875 -10.181640625 10.2958984375 -10.91796875L8.58203125 -11.3369140625C6.982421875 -11.7177734375 5.560546875 -12.314453125 5.560546875 -13.7236328125C5.560546875 -14.9931640625 6.677734375 -15.9072265625 8.658203125 -15.9072265625C10.6005859375 -15.9072265625 11.806640625 -15.03125 11.9462890625 -13.5205078125H15.69140625C15.6279296875 -16.8466796875 12.8857421875 -19.169921875 8.6962890625 -19.169921875C4.5830078125 -19.169921875 1.5869140625 -16.884765625 1.5869140625 -13.4697265625C1.5869140625 -10.71484375 3.50390625 -9.1025390625 6.703125 -8.328125L8.78515625 -7.8076171875C10.841796875 -7.2998046875 12.0478515625 -6.703125 12.0478515625 -5.408203125C12.0478515625 -3.9736328125 10.6767578125 -2.99609375 8.607421875 -2.99609375C6.5126953125 -2.99609375 4.9765625 -3.9482421875 4.849609375 -5.865234375H1.0791015625C1.193359375 -1.8408203125 4.1005859375 0.279296875 8.6455078125 0.279296875Z" fill="#9a8f80"/><path d="M39.9765625 -15.7041015625H45.765625V0.0H49.650390625V-15.7041015625H55.4267578125V-18.916015625H39.9765625Z" fill="#9a8f80"/><path d="M87.900390625 0.2666015625C92.572265625 0.2666015625 95.7080078125 -2.5009765625 95.7080078125 -6.6396484375V-18.916015625H91.8232421875V-6.95703125C91.8232421875 -4.748046875 90.2744140625 -3.1611328125 87.900390625 -3.1611328125C85.5263671875 -3.1611328125 83.96484375 -4.748046875 83.96484375 -6.95703125V-18.916015625H80.0927734375V-6.6396484375C80.0927734375 -2.5009765625 83.1904296875 0.2666015625 87.900390625 0.2666015625Z" fill="#9a8f80"/><path d="M127.775390625 0.0C133.5263671875 0.0 136.9921875 -3.5546875 136.9921875 -9.470703125C136.9921875 -15.361328125 133.5263671875 -18.916015625 127.8388671875 -18.916015625H121.123046875V0.0ZM124.9951171875 -3.3388671875V-15.5771484375H127.6103515625C131.228515625 -15.5771484375 133.1328125 -13.6982421875 133.1328125 -9.470703125C133.1328125 -5.2177734375 131.228515625 -3.3388671875 127.5849609375 -3.3388671875Z" fill="#9a8f80"/><path d="M165.771484375 -18.916015625H161.8994140625V0.0H165.771484375Z" fill="#9a8f80"/><path d="M199.501953125 0.25390625C204.5166015625 0.25390625 208.3251953125 -3.2880859375 208.3251953125 -9.4453125C208.3251953125 -15.6279296875 204.5166015625 -19.169921875 199.501953125 -19.169921875C194.4873046875 -19.169921875 190.6787109375 -15.6279296875 190.6787109375 -9.4453125C190.6787109375 -3.30078125 194.4873046875 0.25390625 199.501953125 0.25390625ZM199.501953125 -3.1865234375C196.5693359375 -3.1865234375 194.6142578125 -5.3955078125 194.6142578125 -9.4453125C194.6142578125 -13.5078125 196.5693359375 -15.7294921875 199.501953125 -15.7294921875C202.4345703125 -15.7294921875 204.3896484375 -13.5205078125 204.3896484375 -9.4453125C204.3896484375 -5.3955078125 202.4345703125 -3.1865234375 199.501953125 -3.1865234375Z" fill="#9a8f80"/></g></svg></div>
+<script>
+(function(){var el=document.getElementById('sgsplash');if(!el)return;
+ setTimeout(function(){el.classList.add('out');setTimeout(function(){el.remove();window.dispatchEvent(new Event('splashdone'));},750);},2300);})();
+</script>
+<div id="topL" class="hide"><button id="profBtn" type="button">👤 <span id="profName">프로필</span></button><button id="setBtn" type="button" aria-label="설정">⚙️</button></div>
+<div id="acct" class="ov hide" role="dialog" aria-modal="true"><div class="ovb" id="acctBox"></div></div>
+<div id="prof" class="ov hide" role="dialog" aria-modal="true"><div class="ovb" id="profBox"></div></div>
+<div id="sett" class="ov hide" role="dialog" aria-modal="true"><div class="ovb" id="settBox"></div></div>
+<script>
+(function(){
+const FB_CONFIG={apiKey:"AIzaSyDmYVva4uy-WY0dsHTNqcEtsYMBSAGPdzA",authDomain:"samgyejeon.firebaseapp.com",databaseURL:"https://samgyejeon-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"samgyejeon",storageBucket:"samgyejeon.firebasestorage.app",messagingSenderId:"1048334035623",appId:"1:1048334035623:web:26b743387c81c3f6d40982"};
+const FB_VER='10.12.2',NAME_RE=/^[A-Za-z0-9가-힣_]{2,12}$/;
+const A={user:null,uid:null,name:'',email:'',tab:'in',busy:false,err:'',needName:false,ready:false,splash:false,f:{}};window.ACC=A;
+let FBI=null;const E=id=>document.getElementById(id);const esc=t=>String(t||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function ls(u){return new Promise((ok,no)=>{const s=document.createElement('script');s.src=u;s.onload=ok;s.onerror=()=>no({code:'auth/network-request-failed'});document.head.appendChild(s);});}
+async function fbInit(){if(FBI)return FBI;if(window.__FBMOCK){FBI=window.__FBMOCK;}else{const b='https://cdn.jsdelivr.net/npm/firebase@'+FB_VER+'/';await ls(b+'firebase-app-compat.js');await ls(b+'firebase-auth-compat.js');await ls(b+'firebase-database-compat.js');
+  firebase.initializeApp(FB_CONFIG);const auth=firebase.auth(),db=firebase.database();
+  FBI={onAuth:cb=>auth.onAuthStateChanged(cb),signUp:(e,p)=>auth.createUserWithEmailAndPassword(e,p).then(r=>r.user),signIn:(e,p)=>auth.signInWithEmailAndPassword(e,p).then(r=>r.user),google:()=>auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(r=>r.user),reset:e=>auth.sendPasswordResetEmail(e),out:()=>auth.signOut(),get:p=>db.ref(p).get().then(s=>s.val()),set:(p,v)=>db.ref(p).set(v),txn:(p,fn)=>db.ref(p).transaction(fn).then(r=>r.committed)};}
+ FBI.onAuth(u=>{A.ready=true;if(u){if(u.uid!==A.uid){A.user=u;A.uid=u.uid;A.email=u.email||'';afterLogin();}}else{A.user=null;A.uid=null;A.name='';gate();}});return FBI;}
+function err(e){const c=(e&&e.code)||'';return ({'auth/invalid-email':'이메일 형식이 맞지 않아요','auth/user-not-found':'이메일이나 비밀번호가 틀렸어요','auth/wrong-password':'이메일이나 비밀번호가 틀렸어요','auth/invalid-credential':'이메일이나 비밀번호가 틀렸어요','auth/invalid-login-credentials':'이메일이나 비밀번호가 틀렸어요','auth/email-already-in-use':'이미 가입된 이메일이에요','auth/weak-password':'비밀번호는 6자 이상이어야 해요','auth/too-many-requests':'시도가 너무 많아요. 잠시 뒤에 해 주세요','auth/popup-closed-by-user':'구글 로그인 창이 닫혔어요','auth/unauthorized-domain':'이 주소에서는 아직 구글 로그인을 쓸 수 없어요. 이메일로 가입해 주세요','auth/network-request-failed':'인터넷 연결을 확인해 주세요'})[c]||('문제가 생겼어요'+(c?' ('+c+')':''));}
+const G='<svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
+function renderAcct(){const b=E('acctBox'),up=A.tab==='up',bz=A.busy;
+ if(A.needName){b.innerHTML='<h2>반가워요!</h2><p class="sub2">게임에서 쓸 아이디를 정해 주세요</p><input id="aN" maxlength="12" placeholder="아이디 (한글·영문·숫자 2~12자)" autocomplete="off" value="'+esc(A.f.n)+'">'+(A.err?'<div class="err">'+esc(A.err)+'</div>':'')+'<button class="pbtn" data-a="name"'+(bz?' disabled':'')+'>'+(bz?'확인 중…':'이 아이디로 시작')+'</button><button class="lnk" data-a="out">다른 계정으로 로그인</button>';return;}
+ b.innerHTML='<h2>퐁당 하루</h2><p class="sub2">SAGATON 계정으로 시작해요</p><div class="tabs"><button data-a="tab" data-v="in" class="'+(up?'':'on')+'">로그인</button><button data-a="tab" data-v="up" class="'+(up?'on':'')+'">회원가입</button></div>'+
+  '<input id="aE" type="email" placeholder="이메일" autocomplete="email" inputmode="email" value="'+esc(A.f.e)+'"><input id="aP" type="password" placeholder="비밀번호'+(up?' (6자 이상)':'')+'" autocomplete="'+(up?'new-password':'current-password')+'">'+
+  (up?'<input id="aN" maxlength="12" placeholder="아이디 (한글·영문·숫자 2~12자)" autocomplete="off" value="'+esc(A.f.n)+'">':'')+
+  (A.err?'<div class="err">'+esc(A.err)+'</div>':'')+'<button class="pbtn" data-a="'+(up?'up':'in')+'"'+(bz?' disabled':'')+'>'+(bz?'잠시만요…':(up?'가입하고 시작하기':'로그인'))+'</button>'+
+  '<div class="or">또는</div><button class="pbtn w gbtn" data-a="google"'+(bz?' disabled':'')+'>'+G+' 구글로 계속하기</button>'+(up?'':'<button class="lnk" data-a="reset">비밀번호를 잊었어요</button>')+'<p class="sub2" style="font-size:13px;margin:14px 0 0">EAST SAGA와 같은 SAGATON 계정을 쓸 수 있어요</p>';}
+function v(id){const e=E(id);return e?e.value.trim():'';}
+async function act(k,el){if(k==='tab'){A.tab=el.dataset.v;A.err='';renderAcct();return;}if(k==='out'){A.needName=false;try{await FBI.out();}catch(_){}return;}
+ if(A.busy)return;A.f={e:v('aE')||A.f.e||'',p:v('aP'),n:v('aN')||A.f.n||''};A.err='';A.busy=true;renderAcct();
+ try{await fbInit();
+  if(k==='in'){if(!A.f.e||!A.f.p)throw{msg:'이메일과 비밀번호를 입력해 주세요'};await FBI.signIn(A.f.e,A.f.p);}
+  else if(k==='up'){if(!A.f.e||!A.f.p)throw{msg:'이메일과 비밀번호를 입력해 주세요'};if(!NAME_RE.test(A.f.n))throw{msg:'아이디는 한글·영문·숫자·_ 2~12자로 정해 주세요'};if(await FBI.get('usernames/'+A.f.n.toLowerCase()))throw{msg:'이미 쓰는 아이디예요'};A.pending=A.f.n;await FBI.signUp(A.f.e,A.f.p);}
+  else if(k==='google'){await FBI.google();}
+  else if(k==='reset'){if(!A.f.e)throw{msg:'이메일 칸에 가입한 이메일을 적고 눌러 주세요'};await FBI.reset(A.f.e);A.busy=false;A.err='';renderAcct();toast('재설정 메일을 보냈어요');return;}
+  else if(k==='name'){if(!NAME_RE.test(A.f.n))throw{msg:'아이디는 한글·영문·숫자·_ 2~12자로 정해 주세요'};A.pending=A.f.n;await afterLogin();return;}
+ }catch(e){A.busy=false;A.err=e.msg||err(e);renderAcct();}}
+E('acct').addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(b)act(b.dataset.a,b);});
+E('acct').addEventListener('keydown',e=>{if(e.key==='Enter'){const b=E('acctBox').querySelector('.pbtn');if(b)b.click();}});
+async function claim(n){const ok=await FBI.txn('usernames/'+n.toLowerCase(),cur=>cur?undefined:A.uid);if(!ok)return false;await FBI.set('users/'+A.uid+'/name',n);return true;}
+async function afterLogin(){try{const u=await FBI.get('users/'+A.uid)||{};
+  if(!u.name&&A.pending){const n=A.pending;A.pending='';if(await claim(n))u.name=n;else A.err='방금 다른 사람이 그 아이디를 가져갔어요';}
+  if(!u.name){A.needName=true;A.busy=false;renderAcct();gate();return;}
+  A.needName=false;A.name=u.name;A.busy=false;
+  if(u.pongdang){try{const r=JSON.parse(u.pongdang);if((r.days||0)>=(save.days||0)){Object.assign(save,r);try{localStorage.setItem('pongdang2',JSON.stringify(save));}catch(_){}}}catch(_){}}
+  if(!save.joined){save.joined=Date.now();}
+  push(true);gate();if(typeof buildPick==='function')buildPick();toast(A.name+' 님, 반가워요!');
+ }catch(e){A.busy=false;A.err=err(e);renderAcct();gate();}}
+let pt=0;function push(now){if(!FBI||!A.uid||!A.name)return;clearTimeout(pt);pt=setTimeout(()=>{FBI.set('users/'+A.uid+'/pongdang',JSON.stringify(save)).catch(()=>{});},now?0:1200);}
+window.cloudPush=push;
+const _st=store;window.store=store=function(){_st();push();};
+function gate(){if(!A.splash)return;const inUser=!!(A.uid&&A.name);E('acct').classList.toggle('hide',inUser||!A.ready&&!A.err);E('topL').classList.toggle('hide',!inUser||MODE!=='title');E('profName').textContent=A.name||'프로필';if(!inUser&&(A.ready||A.err))renderAcct();}
+window.addEventListener('splashdone',()=>{A.splash=true;if(!A.ready){E('acct').classList.remove('hide');renderAcct();}gate();});
+setInterval(()=>{const t=E('topL');if(t)t.classList.toggle('hide',!(A.uid&&A.name)||MODE!=='title');},300);
+fbInit().catch(e=>{A.ready=true;A.err=err(e);gate();});
+// 프로필
+function famCount(){return ANIMALS.filter(a=>a.lv<=save.lv).length;}
+function openProf(){const owned=DECO.filter(d=>save.deco[d.id]).length,j=save.joined?new Date(save.joined):null;
+ E('profBox').innerHTML='<div class="pav"><canvas id="pAv" width="192" height="144"></canvas><div><div class="pn">'+esc(A.name)+'</div><div class="pe">'+esc(A.email)+'</div></div></div>'+
+ [['레벨','Lv '+save.lv+' <small style="color:#9bb4ca">('+save.xp+' / '+need(save.lv)+')</small>'],['지낸 하루','하루 '+save.days+'번'],['가진 조개',SHI+' '+save.shells+'개'],['꾸민 장식',owned+' / '+DECO.length+'개'],['함께하는 가족',famCount()+' / '+ANIMALS.length+'명'],['함께한 날',j?j.getFullYear()+'.'+(j.getMonth()+1)+'.'+j.getDate():'-']].map(r=>'<div class="prow"><b>'+r[0]+'</b><span>'+r[1]+'</span></div>').join('')+
+ '<button class="pbtn" data-p="close" style="margin-top:16px">닫기</button><button class="lnk" data-p="out">로그아웃</button>';
+ E('prof').classList.remove('hide');const g=E('pAv').getContext('2d');const draw=()=>{if(E('prof').classList.contains('hide'))return;g.clearRect(0,0,192,144);drawRig(g,save.pick,96,74,save.pick==='fr'?150:(save.pick==='sis'?90:118),1,T,'happy',false,1,0);requestAnimationFrame(draw);};draw();}
+E('profBtn').onclick=openProf;
+E('prof').addEventListener('click',async e=>{const b=e.target.closest('[data-p]');if(e.target===E('prof')||(b&&b.dataset.p==='close')){E('prof').classList.add('hide');return;}
+ if(b&&b.dataset.p==='out'){if(!confirm('로그아웃할까요?'))return;E('prof').classList.add('hide');push(true);A.name='';try{await FBI.out();}catch(_){}A.tab='in';A.f={};renderAcct();E('acct').classList.remove('hide');}});
+// 설정
+const SET=Object.assign({bgm:true,vol:55,sfx:true},(()=>{try{return JSON.parse(localStorage.getItem('pongdang_set')||'{}');}catch(_){return{};}})());
+try{if(localStorage.getItem('pongdang_bgm')==='off')SET.bgm=false;}catch(_){}
+window.SET=SET;function saveSet(){try{localStorage.setItem('pongdang_set',JSON.stringify(SET));localStorage.setItem('pongdang_bgm',SET.bgm?'on':'off');}catch(_){}}
+function applySet(){const a=E('bgm');if(a){a.volume=SET.vol/100;if(!SET.bgm)a.pause();}const bb=E('bgmBtn');if(bb){bb.textContent=SET.bgm?'🎵':'🔇';bb.classList.toggle('off',!SET.bgm);}}
+function openSet(){E('settBox').innerHTML='<h2>설정</h2><p class="sub2">'+esc(A.name)+' 님의 퐁당 하루</p>'+
+ '<div class="srow"><span>🎵 배경음악</span><button class="tg'+(SET.bgm?' on':'')+'" data-s="bgm" aria-label="배경음악"></button></div>'+
+ '<div class="srow"><span>🔉 음악 크기</span><input type="range" min="0" max="100" value="'+SET.vol+'" id="sVol"></div>'+
+ 
+ '<div class="srow"><span>👤 계정</span><span style="color:#7b98b2;font-size:15px">'+esc(A.email)+'</span></div>'+
+ '<button class="pbtn" data-s="close" style="margin-top:16px">닫기</button><button class="lnk" data-s="reset">처음부터 다시 하기 (기록 지우기)</button><button class="lnk" data-s="out">로그아웃</button>';
+ E('sett').classList.remove('hide');E('sVol').oninput=e=>{SET.vol=+e.target.value;saveSet();applySet();};}
+E('setBtn').onclick=openSet;
+E('sett').addEventListener('click',async e=>{const b=e.target.closest('[data-s]');if(e.target===E('sett')||(b&&b.dataset.s==='close')){E('sett').classList.add('hide');return;}if(!b)return;const k=b.dataset.s;
+ if(k==='bgm'||k==='sfx'){SET[k]=!SET[k];saveSet();applySet();b.classList.toggle('on',SET[k]);if(k==='bgm'&&SET.bgm){const a=E('bgm');a.play().catch(()=>{});}}
+ if(k==='reset'){if(!confirm('정말 처음부터 다시 할까요? 레벨, 조개, 장식이 모두 사라져요.'))return;const j=save.joined;for(const x in save)delete save[x];Object.assign(save,{lv:1,xp:0,pick:'me',days:0,shells:0,deco:{},joined:j});store();push(true);buildPick();E('sett').classList.add('hide');toast('새로 시작해요!');}
+ if(k==='out'){if(!confirm('로그아웃할까요?'))return;E('sett').classList.add('hide');push(true);A.name='';try{await FBI.out();}catch(_){}A.tab='in';A.f={};renderAcct();E('acct').classList.remove('hide');}});
+window.addEventListener('load',applySet);setTimeout(applySet,0);
+})();
+</script>
+<audio id="bgm" src="bgm.mp3?v=1" loop preload="auto"></audio><button id="bgmBtn" type="button" aria-label="배경음악 켜기/끄기">🎵</button>
+<script>(function(){const a=document.getElementById('bgm'),b=document.getElementById('bgmBtn');a.volume=(window.SET?SET.vol:55)/100;let on=window.SET?SET.bgm:true;
 function ui(){b.textContent=on?'🎵':'🔇';b.classList.toggle('off',!on);}
-function play(){if(on){const p=a.play();if(p&&p.catch)p.catch(()=>{});}}
+function play(){on=window.SET?SET.bgm:on;if(on){const p=a.play();if(p&&p.catch)p.catch(()=>{});}}
 ui();
 const first=()=>{play();['pointerdown','keydown','touchstart'].forEach(t=>removeEventListener(t,first,true));};
 ['pointerdown','keydown','touchstart'].forEach(t=>addEventListener(t,first,true));
-b.addEventListener('click',e=>{e.stopPropagation();on=!on;try{localStorage.setItem('pongdang_bgm',on?'on':'off');}catch(_){}ui();if(on)play();else a.pause();});
+b.addEventListener('click',e=>{e.stopPropagation();on=!on;if(window.SET){SET.bgm=on;try{localStorage.setItem('pongdang_set',JSON.stringify(SET));}catch(_){}}try{localStorage.setItem('pongdang_bgm',on?'on':'off');}catch(_){}ui();if(on)play();else a.pause();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)a.pause();else play();});
 })();</script></body></html>

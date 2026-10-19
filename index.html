@@ -218,7 +218,7 @@ function tagAt(sx,y,t){t=window.TR?TR(t):t;x.font='bold 18px "Poor Story", syste
 function ground(k,wx,lbl){const h=objH(k),yb=FLOOR()+H*.04,sx=wx-cam;if(sx<-300||sx>W+300)return;drawObj(k,sx,yb-h/2,h);if(lbl)tagAt(sx,yb-h-12,lbl);}
 function progRing(sx,y,r,p){x.save();x.lineWidth=6;x.strokeStyle='rgba(255,255,255,.7)';x.beginPath();x.arc(sx,y,r,0,7);x.stroke();x.strokeStyle='#ffc93c';x.beginPath();x.arc(sx,y,r,-Math.PI/2,-Math.PI/2+p*Math.PI*2);x.stroke();x.restore();}
 function hurtP(){if(P.hurt>0)return false;P.hurt=1.4;DAY.hearts--;fxAdd('heart',P.x,P.y-40,46,.7);P.vx=-300*P.face;toast('아야!');if(DAY.hearts<=0){DAY.hearts=DAY.maxH||3;endPhase(false);return true;}return false;}
-function drawHook(sx,y){x.save();x.strokeStyle='rgba(59,42,34,.6)';x.lineWidth=2;x.beginPath();x.moveTo(sx,0);x.lineTo(sx,y-45);x.stroke();x.restore();drawObj('hook',sx,y,100);}
+function drawHook(sx,y){x.save();x.strokeStyle='rgba(59,42,34,.6)';x.lineWidth=2;x.beginPath();x.moveTo(sx+4,0);x.lineTo(sx+4,y-49);x.stroke();x.restore();drawObj('hook',sx,y,100);}
 function hzInit(s,kind,L,n){s.hz=[];if(!kind)return;for(let i=0;i<n;i++){const wx=550+i*(L-750)/n+rnd(i*3+DAY.seed)*140;if(kind==='pred')s.hz.push({t:'pred',k:i,x:wx,base:H*.25+rnd(i*5+DAY.seed)*H*.45,ph:rnd(i)*6,amp:H*.18,s:1+rnd(i*9)*.5,y:0});else s.hz.push({t:'hook',x:wx,ph:rnd(i*7+DAY.seed)*6,sp:.9+rnd(i*2)*.6,y:0});}}
 function hzStep(s,dt){for(const p of s.hz){const sx=p.x-cam;if(p.t==='pred'){p.ph+=dt*5;p.y=p.base+Math.sin(T*.9+p.ph*.2)*p.amp;if(sx<-200||sx>W+200)continue;drawPred(sx,p.y,p.s*.9,p.ph,p.k);if(near(p.x,p.y,P.x,P.y,P.size*.42+40*p.s)&&hurtP())return true;}
  else{p.y=H*.12+(Math.sin(T*p.sp+p.ph)*.5+.5)*H*.55;if(sx<-100||sx>W+100)continue;drawHook(sx,p.y);if(near(p.x,p.y+25,P.x,P.y,P.size*.4+22)&&hurtP())return true;}}return false;}
@@ -651,7 +651,7 @@ const SET=Object.assign({bgm:true,vol:55,lang:'ko',fs:'1',joy:'any'},(()=>{try{r
 try{if(localStorage.getItem('pongdang_bgm')==='off')SET.bgm=false;}catch(_){}
 window.SET=SET;function saveSet(){try{localStorage.setItem('pongdang_set',JSON.stringify(SET));localStorage.setItem('pongdang_bgm',SET.bgm?'on':'off');}catch(_){}}
 function applySet(){const a=E('bgm');if(a){a.volume=SET.vol/100;if(!SET.bgm)a.pause();}const bb=E('bgmBtn');if(bb){bb.innerHTML=ii(SET.bgm?'on':'off');bb.classList.toggle('off',!SET.bgm);}}
-const LANGS=[['ko','한국어'],['en','English'],['ja','日本語'],['zh','中文'],['es','Español']],VER='v0.4.2 · 2026.10.19';
+const LANGS=[['ko','한국어'],['en','English'],['ja','日本語'],['zh','中文'],['es','Español']],VER='v0.4.0 · 2026.10.19';
 function chips(key,opts){return '<span class="chips">'+opts.map(o=>'<button class="chip'+(SET[key]===o[0]?' on':'')+'" data-c="'+key+'" data-v="'+o[0]+'">'+o[1]+'</button>').join('')+'</span>';}
 function row(icon,label,right){return '<div class="srow"><span>'+ii(icon)+' '+label+'</span>'+right+'</div>';}
 function openSet(){E('settBox').innerHTML='<h2>설정</h2><p class="sub2">'+esc(A.name)+' 님의 퐁당 하루</p>'+

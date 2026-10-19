@@ -322,7 +322,7 @@ let FBI=null;const E=id=>document.getElementById(id);const esc=t=>String(t||'').
 function ls(u){return new Promise((ok,no)=>{const s=document.createElement('script');s.src=u;s.onload=ok;s.onerror=()=>no({code:'auth/network-request-failed'});document.head.appendChild(s);});}
 async function fbInit(){if(FBI)return FBI;if(window.__FBMOCK){FBI=window.__FBMOCK;}else{const b='https://cdn.jsdelivr.net/npm/firebase@'+FB_VER+'/';await ls(b+'firebase-app-compat.js');await ls(b+'firebase-auth-compat.js');await ls(b+'firebase-database-compat.js');
   firebase.initializeApp(FB_CONFIG);const auth=firebase.auth(),db=firebase.database();
-  FBI={onAuth:cb=>auth.onAuthStateChanged(cb),signUp:(e,p)=>auth.createUserWithEmailAndPassword(e,p).then(r=>r.user),signIn:(e,p)=>auth.signInWithEmailAndPassword(e,p).then(r=>r.user),google:()=>auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(r=>r.user),reset:e=>auth.sendPasswordResetEmail(e),out:()=>auth.signOut(),get:p=>db.ref(p).get().then(s=>s.val()),set:(p,v)=>db.ref(p).set(v),txn:(p,fn)=>db.ref(p).transaction(fn).then(r=>r.committed)};}
+  FBI={onAuth:cb=>auth.onAuthStateChanged(cb),signUp:(e,p)=>auth.createUserWithEmailAndPassword(e,p).then(r=>r.user),signIn:(e,p)=>auth.signInWithEmailAndPassword(e,p).then(r=>r.user),google:()=>auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(r=>r.user),reset:e=>auth.sendPasswordResetEmail(e),out:()=>auth.signOut(),get:p=>db.ref(p).get().then(s=>s.val()),set:(p,v)=>db.ref(p).set(v),txn:(p,fn)=>db.ref(p).transaction(fn).then(r=>r.committed),remove:p=>db.ref(p).remove()};}
  FBI.onAuth(u=>{A.ready=true;if(u){if(u.uid!==A.uid){A.user=u;A.uid=u.uid;A.email=u.email||'';afterLogin();}}else{A.user=null;A.uid=null;A.name='';gate();}});return FBI;}
 function err(e){const c=(e&&e.code)||'';return ({'auth/invalid-email':'이메일 형식이 맞지 않아요','auth/user-not-found':'이메일이나 비밀번호가 틀렸어요','auth/wrong-password':'이메일이나 비밀번호가 틀렸어요','auth/invalid-credential':'이메일이나 비밀번호가 틀렸어요','auth/invalid-login-credentials':'이메일이나 비밀번호가 틀렸어요','auth/email-already-in-use':'이미 가입된 이메일이에요','auth/weak-password':'비밀번호는 6자 이상이어야 해요','auth/too-many-requests':'시도가 너무 많아요. 잠시 뒤에 해 주세요','auth/popup-closed-by-user':'구글 로그인 창이 닫혔어요','auth/unauthorized-domain':'이 주소에서는 아직 구글 로그인을 쓸 수 없어요. 이메일로 가입해 주세요','auth/network-request-failed':'인터넷 연결을 확인해 주세요'})[c]||('문제가 생겼어요'+(c?' ('+c+')':''));}
 const G='<svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
@@ -366,10 +366,22 @@ function famCount(){return ANIMALS.filter(a=>a.lv<=save.lv).length;}
 function openProf(){const owned=DECO.filter(d=>save.deco[d.id]).length,j=save.joined?new Date(save.joined):null;
  E('profBox').innerHTML='<div class="pav"><canvas id="pAv" width="192" height="144"></canvas><div><div class="pn">'+esc(A.name)+'</div><div class="pe">'+esc(A.email)+'</div></div></div>'+
  [['레벨','Lv '+save.lv+' <small style="color:#9bb4ca">('+save.xp+' / '+need(save.lv)+')</small>'],['지낸 하루','하루 '+save.days+'번'],['가진 조개',SHI+' '+save.shells+'개'],['꾸민 장식',owned+' / '+DECO.length+'개'],['함께하는 가족',famCount()+' / '+ANIMALS.length+'명'],['함께한 날',j?j.getFullYear()+'.'+(j.getMonth()+1)+'.'+j.getDate():'-']].map(r=>'<div class="prow"><b>'+r[0]+'</b><span>'+r[1]+'</span></div>').join('')+
- '<button class="pbtn" data-p="close" style="margin-top:16px">닫기</button><button class="lnk" data-p="out">로그아웃</button>';
+ '<div id="rnBox" style="display:none;margin-top:14px"><input id="rnI" maxlength="12" placeholder="새 아이디 (한글·영문·숫자 2~12자)" autocomplete="off"><div class="err" id="rnE"></div><button class="pbtn" data-p="rnGo">이 아이디로 바꾸기</button><p class="sub2" style="font-size:13px;margin:8px 0 0">EAST SAGA에서도 같은 아이디로 바뀌어요</p></div>'+'<button class="pbtn w" data-p="rn" style="margin-top:14px">✏️ 아이디 바꾸기</button><button class="pbtn" data-p="close" style="margin-top:10px">닫기</button><button class="lnk" data-p="out">로그아웃</button>';
  E('prof').classList.remove('hide');const g=E('pAv').getContext('2d');const draw=()=>{if(E('prof').classList.contains('hide'))return;g.clearRect(0,0,192,144);drawRig(g,save.pick,96,74,save.pick==='fr'?150:(save.pick==='sis'?90:118),1,T,'happy',false,1,0);requestAnimationFrame(draw);};draw();}
 E('profBtn').onclick=openProf;
 E('prof').addEventListener('click',async e=>{const b=e.target.closest('[data-p]');if(e.target===E('prof')||(b&&b.dataset.p==='close')){E('prof').classList.add('hide');return;}
+ if(b&&b.dataset.p==='rn'){E('rnBox').style.display='block';b.style.display='none';E('rnI').value=A.name;E('rnI').focus();return;}
+ if(b&&b.dataset.p==='rnGo'){const n=E('rnI').value.trim(),er=E('rnE');er.textContent='';
+  if(!NAME_RE.test(n)){er.textContent='아이디는 한글·영문·숫자·_ 2~12자로 정해 주세요';return;}
+  if(n===A.name){er.textContent='지금 쓰는 아이디예요';return;}
+  b.disabled=true;b.textContent='바꾸는 중…';
+  try{const nl=n.toLowerCase(),ol=A.name.toLowerCase();
+   if(nl!==ol){const ok=await FBI.txn('usernames/'+nl,cur=>cur?undefined:A.uid);if(!ok){er.textContent='이미 쓰는 아이디예요';b.disabled=false;b.textContent='이 아이디로 바꾸기';return;}}
+   await FBI.set('users/'+A.uid+'/name',n);
+   if(nl!==ol){const cur=await FBI.get('usernames/'+ol);if(cur===A.uid&&FBI.remove)await FBI.remove('usernames/'+ol).catch(()=>{});}
+   A.name=n;E('profName').textContent=n;E('prof').classList.add('hide');toast('아이디를 '+n+'(으)로 바꿨어요');
+  }catch(e2){er.textContent=err(e2);b.disabled=false;b.textContent='이 아이디로 바꾸기';}
+  return;}
  if(b&&b.dataset.p==='out'){if(!confirm('로그아웃할까요?'))return;E('prof').classList.add('hide');push(true);A.name='';try{await FBI.out();}catch(_){}A.tab='in';A.f={};renderAcct();E('acct').classList.remove('hide');}});
 // 설정
 const SET=Object.assign({bgm:true,vol:55,sfx:true},(()=>{try{return JSON.parse(localStorage.getItem('pongdang_set')||'{}');}catch(_){return{};}})());

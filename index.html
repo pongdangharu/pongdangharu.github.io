@@ -326,9 +326,9 @@ function finishDay(){MODE='result';const stars=DAY.res.filter(r=>r.ok).length;co
  const r=$('result');r.innerHTML='<h2>'+(stars>=3?'최고의 하루! '+ii('moon'):stars>=2?'즐거운 하루였어요 '+ii('moon'):'내일은 더 잘할 거야 '+ii('moon'))+'</h2><div class="stars">'+ii('star').repeat(stars)+ii('star','dim').repeat(4-stars)+'</div>'+
   '<ul class="res">'+extra+DAY.res.map(v=>'<li>'+(v.ok?ii('check')+' ':'<span style="display:inline-block;width:1.25em;text-align:center;color:#c0cfdc">·</span> ')+v.name+'</li>').join('')+(DAY.nb?'<li class="nbres"><img src="'+NBI[DAY.nb.id].src+'" alt="">'+'<span><b>'+DAY.nb.n+'</b> '+(nbOk?'“'+DAY.nb.yes.replace(/방울/g,(ANIMALS.find(v=>v.id===save.pick)||{name:'방울'}).name)+'” '+SHI+' +'+DAY.nb.rw:'“'+DAY.nb.no+'”')+'</span></li>':'')+'<li>'+SHI+' 조개 +'+(DAY.shells+stars*2)+' (보유 '+save.shells+')</li><li>'+ii('spark')+' 경험치 +'+gain+'</li></ul>'+
   '<div>Lv '+save.lv+(save.lv>before?' '+ii('party')+' 레벨 업!':'')+'</div><div class="xp"><i id="xpb"></i></div>'+(nu.length?'<p><b>새 친구 해금: '+nu.join(', ')+'</b></p>':'')+
-  '<div class="row" style="margin-top:10px"><button class="btn sub" id="rHome">'+ii('home')+' 집 꾸미기</button><button class="btn" id="rNext">다음 날 ▶</button></div><button class="lnk" id="rTop" style="margin-top:8px;background:none;border:0;color:#8a7a6a;font:inherit;font-size:15px;text-decoration:underline;cursor:pointer">처음 화면으로</button>';
+  '<div class="row" style="margin-top:10px"><button class="btn sub" id="rHome">'+ii('home')+' 집 꾸미기</button><button class="btn" id="rNext">홈으로 ▶</button></div>';
  r.classList.remove('hide');setTimeout(()=>{const b=$('xpb');if(b)b.style.width=(save.xp/need(save.lv)*100)+'%';},60);
- $('rNext').onclick=()=>{r.classList.add('hide');showTitle(true);};$('rTop').onclick=()=>{r.classList.add('hide');showTitle(true);};$('rHome').onclick=()=>{r.classList.add('hide');openHome();};}
+ $('rNext').onclick=()=>{r.classList.add('hide');showTitle(true);};$('rHome').onclick=()=>{r.classList.add('hide');openHome();};}
 function hud(on){$('hud').classList.toggle('hide',!on);$('arrow').classList.add('hide');}
 // ════════ 타이틀 ════════
 const pickCv={};

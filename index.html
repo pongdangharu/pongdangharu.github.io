@@ -902,12 +902,42 @@ async function afterLogin(){try{const u=await FBI.get('users/'+A.uid)||{};
   A.needName=false;A.name=u.name;A.busy=false;
   if(u.pongdang){try{const r=JSON.parse(u.pongdang);if((r.days||0)>=(save.days||0)){Object.assign(save,r);try{localStorage.setItem('pongdang2',JSON.stringify(save));}catch(_){}}}catch(_){}}
   if(!save.joined){save.joined=Date.now();}
-  push(true);gate();if(typeof buildPick==='function')buildPick();toast(A.name+' 님, 반가워요!');
+  push(true);gate();if(typeof buildPick==='function')buildPick();toast(A.name+' 님, 반가워요!');try{if(A.email)FBI.set('users/'+A.uid+'/email',A.email).catch(()=>{});}catch(_){}setTimeout(pdClaim,2000);
  }catch(e){A.busy=false;A.err=err(e);renderAcct();gate();}}
-let pt=0;function push(now){if(!FBI||!A.uid||!A.name)return;clearTimeout(pt);pt=setTimeout(()=>{FBI.set('users/'+A.uid+'/pongdang',JSON.stringify(save)).catch(()=>{});},now?0:1200);}
+
+const PD_ADM=['hkimist20@gmail.com','klausenburgh@gmail.com'];
+setInterval(()=>{try{pdAdmBar();}catch(_){}},800);
+window.__pd={get A(){return A;},get FBI(){return FBI;},set FBI(v){FBI=v;},bar:()=>pdAdmBar()};
+function pdIsAdm(){return !!(A.uid&&A.email&&PD_ADM.includes(String(A.email).toLowerCase()));}
+function pdKey(m){return String(m||'').trim().toLowerCase().replace(/\./g,',');}
+function pdBox(id){let d=document.getElementById(id);if(!d){d=document.createElement('div');d.id=id;d.style.cssText='position:fixed;inset:0;z-index:9000;background:rgba(20,40,60,.55);display:flex;align-items:center;justify-content:center;padding:16px';document.body.appendChild(d);}d.style.display='flex';return d;}
+const PD_CARD='background:#fffaf0;border:3px solid #3a5a7a;border-radius:18px;box-shadow:0 6px 0 #3a5a7a;padding:18px 20px;max-width:94vw;max-height:86vh;overflow:auto;color:#2a3a4a;text-align:center;font-family:inherit';
+function pdAdmBar(){let b=document.getElementById('pdAdm');const on=pdIsAdm()&&typeof MODE!=='undefined'&&MODE==='title';
+ if(!b){if(!on)return;b=document.createElement('div');b.id='pdAdm';b.style.cssText='position:fixed;left:12px;bottom:12px;z-index:50;display:flex;gap:8px';
+  b.innerHTML='<button class="btn sub" id="pdGiftB" style="padding:6px 12px;font-size:14px">조개 선물</button><button class="btn sub" id="pdUserB" style="padding:6px 12px;font-size:14px">유저 목록</button>';document.body.appendChild(b);
+  document.getElementById('pdGiftB').onclick=pdGift;document.getElementById('pdUserB').onclick=pdUsers;}
+ b.style.display=on?'flex':'none';}
+function pdGift(){const d=pdBox('pdGiftP');const inp='font:16px inherit;padding:8px;border:2px solid #3a5a7a;border-radius:10px;width:260px;max-width:80vw;margin:4px 0';
+ d.innerHTML='<div style="'+PD_CARD+'"><h2 style="margin:0 0 6px">조개 선물</h2><p style="margin:0 0 8px;font-size:13px;opacity:.75">받는 사람이 그 이메일로 로그인하면 들어가요<br>빼앗으려면 -50처럼 앞에 - 를 붙이세요</p><input id="pgE" type="email" placeholder="받는 사람 이메일" style="'+inp+'"><br><input id="pgS" type="number" value="50" style="'+inp+';width:120px"><p id="pgM" style="min-height:18px;font-size:13px;margin:6px 0"></p><button class="btn" id="pgGo">보내기</button> <button class="btn sub" id="pgX">닫기</button></div>';
+ document.getElementById('pgX').onclick=()=>d.style.display='none';
+ document.getElementById('pgGo').onclick=()=>{const em=document.getElementById('pgE').value.trim(),n=Math.floor(+document.getElementById('pgS').value||0),M=document.getElementById('pgM');
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){M.textContent='이메일을 확인해 주세요';return;}if(!n||Math.abs(n)>100000){M.textContent='조개는 -100000~100000';return;}
+  M.textContent='보내는 중…';FBI.push('gifts_pd/'+pdKey(em),{shells:n,t:Date.now()}).then(()=>{M.textContent=(n<0?'회수 예약했어요 — ':'보냈어요 — ')+em+' · 조개 '+n;}).catch(x=>{M.textContent='실패: '+((x&&x.code)||x)+' (규칙 확인 필요)';});};}
+function pdClaim(){if(!A.uid||!A.email)return;const p='gifts_pd/'+pdKey(A.email);FBI.get(p).then(v=>{if(!v)return;let n=0;for(const k in v)n+=Math.max(-100000,Math.min(100000,+v[k].shells||0));return FBI.remove(p).then(()=>{if(!n)return;save.shells=Math.max(0,(save.shells||0)+n);store();
+  const d=pdBox('pdGiftT');d.innerHTML='<div style="'+PD_CARD+';min-width:240px"><div style="font-size:13px;opacity:.75;margin-bottom:6px">⚜ SAGATON 관리자 권한으로 '+(n<0?'조개 회수':'보낸 선물')+'</div><div style="font-size:24px;font-weight:700;margin-bottom:12px">🐚 조개 '+(n>0?'+':'')+n+'</div><button class="btn" id="pgOk">'+(n<0?'확인':'받기')+'</button></div>';document.getElementById('pgOk').onclick=()=>{d.style.display='none';if(typeof buildPick==='function')buildPick();};});}).catch(()=>{});}
+function pdUsers(){const d=pdBox('pdUserP');d.innerHTML='<div style="'+PD_CARD+';width:min(860px,94vw)"><h2 style="margin:0 0 4px">유저 목록 · 퐁당 하루</h2><p id="puM" style="margin:0 0 8px;font-size:13px;opacity:.75">불러오는 중…</p><div id="puL"></div><button class="btn sub" id="puX" style="margin-top:10px">닫기</button></div>';
+ document.getElementById('puX').onclick=()=>d.style.display='none';const esc=x=>String(x==null?'':x).replace(/[<>&"]/g,'');
+ const fmt=t=>{if(!t)return '—';const D=new Date(t);return (D.getMonth()+1)+'/'+D.getDate()+' '+String(D.getHours()).padStart(2,'0')+':'+String(D.getMinutes()).padStart(2,'0');};
+ FBI.get('users').then(v=>{v=v||{};const rows=[];for(const uid in v){const u=v[uid]||{};let g=null;try{g=u.pongdang?JSON.parse(u.pongdang):null;}catch(_){}rows.push({name:u.name||'',em:u.email||'',g});}
+  rows.sort((a,b)=>((b.g&&(b.g.t||b.g.joined))||0)-((a.g&&(a.g.t||a.g.joined))||0));
+  document.getElementById('puM').textContent='가입 '+rows.length+'명 · 퐁당 하루 해 본 사람 '+rows.filter(r=>r.g).length+'명';
+  let h='<table style="width:100%;border-collapse:collapse;font-size:13px;text-align:left"><tr style="color:#3a5a7a"><th style="padding:6px">이름</th><th>이메일</th><th>레벨</th><th>지낸 날</th><th>조개</th><th>시작</th><th>마지막 플레이</th></tr>';
+  for(const r of rows){const g=r.g||{};h+='<tr style="border-top:1px solid #d8d0c0;opacity:'+(r.g?1:.5)+'"><td style="padding:6px">'+esc(r.name)+'</td><td>'+esc(r.em||'(다음 로그인 때 기록)')+'</td><td>'+(r.g?'Lv '+(g.lv||1):'—')+'</td><td>'+(r.g?(g.days||0)+'일':'—')+'</td><td>'+(r.g?(g.shells||0):'—')+'</td><td>'+fmt(g.joined)+'</td><td>'+fmt(g.t)+'</td></tr>';}
+  document.getElementById('puL').innerHTML=h+'</table>';}).catch(x=>{document.getElementById('puM').textContent='못 불러왔어요: '+((x&&x.code)||x);});}
+let pt=0;function push(now){if(!FBI||!A.uid||!A.name)return;clearTimeout(pt);pt=setTimeout(()=>{save.t=Date.now();FBI.set('users/'+A.uid+'/pongdang',JSON.stringify(save)).catch(()=>{});},now?0:1200);}
 window.cloudPush=push;
 const _st=store;window.store=store=function(){_st();push();};
-function gate(){if(!A.splash)return;const inUser=!!(A.uid&&A.name);E('acct').classList.toggle('hide',inUser||!A.ready&&!A.err);E('topL').classList.toggle('hide',!inUser||MODE!=='title');E('profName').textContent=A.name||'프로필';if(!inUser&&(A.ready||A.err))renderAcct();}
+function gate(){try{pdAdmBar();}catch(_){}if(!A.splash)return;const inUser=!!(A.uid&&A.name);E('acct').classList.toggle('hide',inUser||!A.ready&&!A.err);E('topL').classList.toggle('hide',!inUser||MODE!=='title');E('profName').textContent=A.name||'프로필';if(!inUser&&(A.ready||A.err))renderAcct();}
 window.addEventListener('splashdone',()=>{A.splash=true;if(!A.ready){E('acct').classList.remove('hide');renderAcct();}gate();});
 setInterval(()=>{const t=E('topL');if(t)t.classList.toggle('hide',!(A.uid&&A.name)||MODE!=='title');},300);
 fbInit().catch(e=>{A.ready=true;A.err=err(e);gate();});
@@ -983,7 +1013,7 @@ E('sett').addEventListener('click',async e=>{const b=e.target.closest('[data-s]'
  if(k==='bgm'||k==='sfx'){SET[k]=!SET[k];saveSet();applySet();b.classList.toggle('on',SET[k]);if(k==='bgm'&&SET.bgm){const a=E('bgm');a.play().catch(()=>{});}}
  if(k==='reset'){if(!confirm('정말 처음부터 다시 할까요? 레벨, 조개, 장식이 모두 사라져요.'))return;const j=save.joined;for(const x in save)delete save[x];Object.assign(save,{lv:1,xp:0,pick:'me',days:0,shells:0,deco:{},joined:j});store();push(true);buildPick();E('sett').classList.add('hide');toast('새로 시작해요!');}
  if(k==='out'){if(!confirm('로그아웃할까요?'))return;E('sett').classList.add('hide');push(true);A.name='';try{await FBI.out();}catch(_){}A.tab='in';A.f={};renderAcct();E('acct').classList.remove('hide');}});
-window.addEventListener('load',applySet);setTimeout(()=>{applySet();applyFs();setLang(SET.lang||'ko');},0);
+window.addEventListener('load',applySet);setTimeout(()=>{applySet();applyFs();if(window.setLang)setLang(SET.lang||'ko');},0);
 })();
 </script>
 <script>(function(){const DICT=window.I18N;let LANG='ko';const orig=new WeakMap();

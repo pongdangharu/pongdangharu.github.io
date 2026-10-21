@@ -467,6 +467,27 @@ NB.forEach(n=>{n.need={octo:'bubble',horse:'hide',twins:'hide',turtle:'home'}[n.
 const FOOD=[{id:'ricecake',n:'해초떡',cost:20,d:'오늘 하트 1개 더'},{id:'friedrice',n:'플랑크톤 볶음밥',cost:25,d:'오늘 하루 더 빨라져요'},{id:'juice',n:'산호 주스',cost:15,d:'남은 놀이 시간 +10초'},{id:'candy',n:'진주 사탕',cost:15,d:'오늘 주운 조개 1.5배'},{id:'seaweed',n:'해초 묶음',cost:8,d:'저녁 재료'},{id:'plankton',n:'플랑크톤 한 봉지',cost:8,d:'저녁 재료'},{id:'grapes',n:'바다포도',cost:15,d:'경험치 +20%'},{id:'gimbap',n:'다시마 김밥',cost:20,d:'특기 기다림 절반'},{id:'soda',n:'거품 사이다',cost:12,d:'황금 거품이 자주'},{id:'cookie',n:'산호 쿠키',cost:15,d:'이웃 부탁 보상 2배'},{id:'pudding',n:'진주 푸딩',cost:20,d:'별 보너스 조개 2배'},{id:'icecream',n:'해초 아이스크림',cost:18,d:'장면마다 한 번 막아 줘요'}];
 function shopNear(wx){const sh=objH('stall'),top=FLOOR()+H*.04-sh;if(PH&&PH.st&&!PH.st.shopDone&&MODE==='play'&&Math.abs(P.x-wx)<sh*.45&&P.y>top-10){PH.st.shopDone=1;openMarket();}}
 const FOODL={ricecake:'쫀득한 해초떡이에요. 먹으면 오늘 하루 하트가 4개가 돼요. 큰 물고기한테 한 번 더 버틸 수 있어요.',friedrice:'든든한 볶음밥이에요. 먹으면 오늘 하루 헤엄이 더 빨라져요.',juice:'시원한 산호 주스예요. 마시면 지금 놀이와 남은 놀이 시간이 10초씩 늘어나요.',candy:'달콤한 진주 사탕이에요. 오늘 주운 조개가 하루 끝에 1.5배가 돼요.',seaweed:'저녁 재료예요. 하루가 끝나면 저녁 반찬이 되고 경험치를 더 받아요. 플랑크톤이랑 같이 사면 볶음밥이 돼요!',plankton:'저녁 재료예요. 하루가 끝나면 저녁 반찬이 되고 경험치를 더 받아요. 해초랑 같이 사면 볶음밥이 돼요!',grapes:'톡톡 터지는 바다포도예요. 오늘 하루 받는 경험치가 20% 늘어나요.',gimbap:'든든한 다시마 김밥이에요. 먹으면 오늘 하루 특기를 다시 쓸 때까지 기다리는 시간이 절반이 돼요.',soda:'톡 쏘는 거품 사이다예요. 마시면 오늘 거품 장면에서 황금 거품과 음표 거품이 훨씬 자주 나와요.',cookie:'바삭한 산호 쿠키예요. 먹으면 오늘 이웃 부탁을 들어줬을 때 받는 조개가 2배가 돼요.',pudding:'말랑한 진주 푸딩이에요. 먹으면 오늘 받은 별마다 주는 보너스 조개가 2배가 돼요.',icecream:'시원한 해초 아이스크림이에요. 먹으면 오늘은 장면마다 처음 한 번 부딪힌 걸 막아 줘요.'};
+// ════ 나눠 먹는 장면 ════
+function shareScene(nb,f,cb){MODE='pause';hud(false);let d=$('shareS');if(!d){d=document.createElement('div');d.id='shareS';d.innerHTML='<div class="sb"><canvas width="640" height="340"></canvas><p class="sq"></p><button class="btn">고마워! ▶</button></div>';document.body.appendChild(d);
+  const st=document.createElement('style');st.textContent='#shareS{position:fixed;inset:0;z-index:80;background:rgba(20,40,70,.45);display:flex;align-items:center;justify-content:center}#shareS.hide{display:none}#shareS .sb{background:#fffdf6;border:3px solid #3b2a22;border-radius:26px;padding:14px 14px 16px;width:min(680px,94vw);max-height:94vh;text-align:center;box-shadow:0 6px 0 rgba(59,42,34,.25)}#shareS canvas{width:100%;height:auto;max-height:62vh;object-fit:contain;border-radius:18px;display:block}#shareS .sq{margin:10px 0;font-size:18px;min-height:1.4em}#shareS .btn{opacity:0;transition:opacity .4s}#shareS .btn.on{opacity:1}';document.head.appendChild(st);}
+ const cv=d.querySelector('canvas'),g=cv.getContext('2d'),q=d.querySelector('.sq'),bt=d.querySelector('.btn'),im=OBJI[f.id],me=P.a.id,T_=t=>window.TR?TR(t):t;
+ q.textContent='';bt.classList.remove('on');d.classList.remove('hide');const t0=performance.now(),bites=[.9,1.6,2.3,3.0];let done=false,hearts=[],noms=[],crumbs=[],lastB=-1;
+ const fin=()=>{if(done)return;done=true;d.classList.add('hide');cb&&cb();};bt.onclick=()=>{if(bt.classList.contains('on'))fin();};
+ (function fr(now){if(done)return;const t=(now-t0)/1000;g.clearRect(0,0,640,340);
+  const gr=g.createLinearGradient(0,0,0,340);gr.addColorStop(0,'#bfe6ff');gr.addColorStop(1,'#7cc6ee');g.fillStyle=gr;g.fillRect(0,0,640,340);
+  g.fillStyle='#f3dfae';g.beginPath();g.ellipse(320,335,380,60,0,0,7);g.fill();
+  if(DIMG.table&&DIMG.table.naturalWidth){const h=110,w=h*DIMG.table.naturalWidth/DIMG.table.naturalHeight;g.drawImage(DIMG.table,320-w/2,305-h,w,h);}
+  let nb_=0;bites.forEach(b=>{if(t>b)nb_++;});if(nb_!==lastB){if(lastB>=0){for(let i=0;i<7;i++)crumbs.push({x:320+(Math.random()-.5)*40,y:210,vx:(Math.random()-.5)*90,vy:-60-Math.random()*60,l:.8});noms.push({x:nb_%2?210:430,y:140,t:0});}lastB=nb_;}
+  const sc=Math.max(0,1-nb_*.25);if(sc>0&&im&&im.naturalWidth){const h=84*sc,w=h*im.naturalWidth/im.naturalHeight;g.save();g.translate(320,222);g.rotate(Math.sin(t*3)*.04);g.drawImage(im,-w/2,-h,w,h);g.restore();}
+  const lean=k=>{let v=0;bites.forEach((b,i)=>{if(i%2===k){const x=t-b+.25;if(x>0&&x<.5)v=Math.sin(x/.5*Math.PI);}});return v;};
+  drawRig(g,me,150+lean(0)*45,200+Math.sin(t*2)*4,200,1,t,'happy',lean(0)>.3,1,0);
+  if(NBI[nb.id])drawNb(g,nb.id,490-lean(1)*45,195+Math.sin(t*2+1)*4,150,t,true);
+  for(const c of crumbs){c.vy+=200/60;c.x+=c.vx/60;c.y+=c.vy/60;c.l-=1/60;if(c.l>0){g.fillStyle='#c89a5a';g.fillRect(c.x,c.y,5,5);}}
+  g.font='bold 30px "Poor Story",system-ui';g.textAlign='center';for(const n of noms){n.t+=1/60;if(n.t<1){g.globalAlpha=1-n.t;g.lineWidth=5;g.strokeStyle='#fff';g.strokeText(T_('냠!'),n.x,n.y-n.t*40);g.fillStyle='#3b2a22';g.fillText(T_('냠!'),n.x,n.y-n.t*40);g.globalAlpha=1;}}
+  if(t>3.1&&Math.random()<.25)hearts.push({x:200+Math.random()*240,y:250,v:40+Math.random()*40,s:20+Math.random()*16});
+  for(const h of hearts){h.y-=h.v/60;if(h.y>-30&&FXI.heart.naturalWidth){g.globalAlpha=Math.max(0,Math.min(1,h.y/150));g.drawImage(FXI.heart,h.x-h.s/2,h.y-h.s/2,h.s,h.s);g.globalAlpha=1;}}
+  if(t>3.2&&!q.textContent){q.innerHTML='<b>'+T_(nb.n)+'</b> “'+T_(nb.thx||'같이 먹으니 더 맛있다!')+'”';bt.classList.add('on');}
+  if(t>10)fin();requestAnimationFrame(fr);})(performance.now());}
 function eatFood(id){DAY.buy=DAY.buy||{};if(DAY.buy[id])return false;DAY.buy[id]=1;
  if(id==='ricecake'){DAY.maxH=4;DAY.hearts=Math.max(DAY.hearts,4);}if(id==='juice'){DAY.juice=1;if(PH)PH.time+=10;}if(id==='icecream'&&P)P.chg=Math.max(P.chg||0,1);updBuffs();return true;}
 function bagN(){const b=save.bag||{};let n=0;for(const k in b)n+=b[k]||0;return n;}
@@ -501,7 +522,7 @@ function openBag(back){if(MODE!=='play'&&!back)return;MODE='pause';jEnd&&jEnd();
    const q=k=>m.querySelector(k);
    q('.mback').onclick=()=>{sel=null;draw();};
    if(q('.meat'))q('.meat').onclick=()=>{if(DAY.buy[f.id])return;save.bag[f.id]--;store();eatFood(f.id);toast(josa(T_(f.n),'을','를')+' '+T_('먹었어요! 냠냠'));sel=null;draw();updBag();};
-   if(q('.mshare'))q('.mshare').onclick=()=>{save.bag[f.id]--;store();DAY.shared=f.id;eatFood(f.id);fxAdd('heart',P.x,P.y-40,70,.9);toast(T_(nb.n)+': '+T_(nb.thx||'고마워, 같이 먹으니 더 맛있다!'));sel=null;draw();updBag();};
+   if(q('.mshare'))q('.mshare').onclick=()=>{save.bag[f.id]--;store();DAY.shared=f.id;eatFood(f.id);sel=null;updBag();m.classList.add('hide');shareScene(nb,f,()=>{if(back)back();else{MODE='play';hud(true);}});};
    return;}
   m.innerHTML='<div class="mb"><h3>'+T_('가방')+'</h3>'+wantTxt+(items.length?'<div class="mg">'+items.map(f=>'<button class="mi'+(want===f.id&&!DAY.shared?' wish':'')+(DAY.buy[f.id]?' got':'')+'" data-f="'+f.id+'"><img src="'+OBJI[f.id].src+'" alt=""><i class="cnt">'+save.bag[f.id]+'</i><b>'+T_(f.n)+'</b><small>'+T_(f.d)+'</small>'+(DAY.buy[f.id]?'<span>'+T_('먹는 중')+'</span>':'')+'</button>').join('')+'</div>':'<p class="ml">'+T_('가방이 비었어요. 시장에서 음식을 사 보세요!')+'</p>')+'<div class="mrow"><button class="btn mx">'+(back?T_('시장으로'):T_('닫기'))+'</button></div></div>';
   m.querySelectorAll('.mi').forEach(b=>b.onclick=()=>{sel=FOOD.find(v=>v.id===b.dataset.f);draw();});

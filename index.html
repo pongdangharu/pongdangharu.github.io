@@ -424,7 +424,7 @@ function skTake(it){it.got=1;fxAdd('spark',it.x,it.y,60,.4);if(it.kind==='key'&&
 const SKD={
  me:{n:'뽀글 거품 방패',cd:9,d:'한 번 막아 주는 거품',f(){P.chg=1;P.bub=1;}},
  sis:{n:'쏙 작아지기',cd:8,d:'4초 동안 작아져요',f(){P.smallT=4;if(!P.size0)P.size0=P.size;P.size=P.size0*.55;}},
- fr:{n:'쑥쑥 힘내기',cd:9,d:'5초 동안 일을 2배 빨리',f(){P.fast=5;}},
+ fr:{n:'새싹 키우기',cd:12,d:'새싹 옆에서 조개 2배·일도 빨리',f(){P.sprout={x:P.x,y:Math.min(FLOOR()-10,P.y+P.size*.3),t:7};fxAdd('spark',P.x,P.y,90,.6);}},
  mom:{n:'엄마 손은 약손',cd:14,d:'하트 1개 회복',f(){const mx=DAY.maxH||3;if(DAY.hearts<mx){DAY.hearts++;fxAdd('heart',P.x,P.y-40,60,.9);}fxAdd('spark',P.x,P.y,P.size*1.6,.6);}},
  dad:{n:'아빠 힘',cd:10,d:'주변 위험을 멀리 밀어내요',f(){skPush(480,420);skClearShots();fxAdd('ripple',P.x,P.y,420,.6);}},
  horse:{n:'꼬리로 끌어오기',cd:8,d:'조개가 날아와요',f(){P.mag=4.5;}},
@@ -450,11 +450,13 @@ const SKD={
 function skOf(){return SKD[P&&P.a.id]||SKD.ray;}
 function useSkill(){if(MODE!=='play'||!P||(P.skcd||0)>0)return;const s=skOf();save.skSeen=save.skSeen||{};if(!save.skSeen[P.a.id]){save.skSeen[P.a.id]=1;store();}skTip();{const c=s.cd*(DAY.buy&&DAY.buy.gimbap?.5:1);P.skcd=c;P.skMax=c;}toast((window.TR?TR(s.n):s.n)+'!');s.f();updSk();}
 function skTick(dt){if(!P)return;P.skcd=Math.max(0,(P.skcd||0)-dt);['inv','shield','puffT','ink','mag','dash','fast','dbl','frz','root','sonar','zap','spd','hideT','shell','light','spin','zz'].forEach(k=>{if(P[k]>0)P[k]-=dt;});
+ if(P.sprout){P.sprout.t-=dt;if(P.sprout.t<=0)P.sprout=null;else if(Math.hypot(P.x-P.sprout.x,P.y-P.sprout.y)<220){P.dbl=Math.max(P.dbl||0,.12);P.fast=Math.max(P.fast||0,.12);}}
  if(P.smallT>0){P.smallT-=dt;if(P.smallT<=0&&P.size0)P.size=P.size0;}
  if(P.dash>0){P.x+=P.face*(P.dashDir||1)*900*dt;}else P.dashDir=0;
  if(P.zap>0)skPreds().forEach(p=>{const dx=p.x-P.x,dy=(p.y||p.base)-P.y,d=Math.hypot(dx,dy);if(d<300){p.x+=(Math.sign(dx)||1)*420*dt;}});
  updSk();}
 function skDrawBehind(){if(!P)return;const sx=P.x-cam;
+ if(P.sprout){const sp=P.sprout,gx=sp.x-cam,gr=Math.min(1,(7-sp.t)*2);x.save();x.globalAlpha=.18+Math.sin(T*3)*.05;x.fillStyle='#bff5a0';x.beginPath();x.arc(gx,sp.y,220,0,7);x.fill();x.restore();drawObj('flower',gx,sp.y-objH('flower')*.35*gr,objH('flower')*.7*gr,Math.sin(T*2)*.05,Math.min(1,sp.t));}
  if(P.ex)for(const it of P.ex){if(it.got)continue;magPull(it,1/60);drawShell(it.x-cam,it.y,it.ph,T,false);if(near(it.x,it.y,P.x,P.y,P.size*.5+18))skTake(it);}
  if(P.light>0){x.save();const g=x.createRadialGradient(sx,P.y,10,sx,P.y,260);g.addColorStop(0,'rgba(255,240,160,.45)');g.addColorStop(1,'rgba(255,240,160,0)');x.fillStyle=g;x.fillRect(sx-260,P.y-260,520,520);x.restore();}
  if(P.shield>0||P.shell>0){x.save();x.globalAlpha=.35+Math.sin(T*10)*.1;x.fillStyle=P.shell>0?'#f3c79a':'#bfe7ff';x.strokeStyle='#3b2a22';x.lineWidth=3;x.beginPath();x.arc(sx,P.y,P.size*.85,0,7);x.fill();x.globalAlpha=.6;x.stroke();x.restore();}
